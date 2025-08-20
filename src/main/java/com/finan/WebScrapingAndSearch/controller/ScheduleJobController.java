@@ -1,9 +1,5 @@
 package com.finan.WebScrapingAndSearch.controller;
 
-import com.finan.WebScrapingAndSearch.job.WebScrapperJob;
-import java.time.Instant;
-import java.util.Date;
-import java.util.UUID;
 
 import com.finan.WebScrapingAndSearch.model.request.ScheduleJobRequest;
 import com.finan.WebScrapingAndSearch.model.request.SearchRequest;
@@ -13,14 +9,7 @@ import com.finan.WebScrapingAndSearch.model.response.SearchResultResponse;
 import com.finan.WebScrapingAndSearch.service.ScheduleJobService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.quartz.JobBuilder;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
-import org.quartz.SimpleScheduleBuilder;
-import org.quartz.Trigger;
-import org.quartz.TriggerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

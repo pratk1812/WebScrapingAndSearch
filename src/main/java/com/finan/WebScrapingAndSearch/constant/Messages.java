@@ -5,9 +5,9 @@ public class Messages {
   public static final String DELIVERY_ORDERS_ACCEPTED = "Delivery orders accepted.";
   public static final String VEHICLE_REQUEST_IS_EMPTY = "VehicleRequest is empty";
   public static final String VEHICLE_DETAILS_ACCEPTED = "Vehicle details accepted.";
-    public static final String SCRAPING_INITIATED_SUCCESSFULLY = "Scraping initiated successfully.";
+  public static final String SCRAPING_INITIATED_SUCCESSFULLY = "Scraping initiated successfully.";
 
-    private Messages() {
+  private Messages() {
     // private constructor
   }
 }

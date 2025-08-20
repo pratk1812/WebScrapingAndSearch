@@ -18,11 +18,14 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "scrapped_data", indexes = {
-        @Index(name = "idx_scrapped_data_job_id", columnList = "job_id")
-}, uniqueConstraints = {
-        @UniqueConstraint(name = "uc_scrapped_url", columnNames = {"url"})
-})
+@Table(
+    name = "scrapped_data",
+    indexes = {@Index(name = "idx_scrapped_data_job_id", columnList = "job_id")},
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "uc_scrapped_url",
+          columnNames = {"url"})
+    })
 public class ScrappedDataEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

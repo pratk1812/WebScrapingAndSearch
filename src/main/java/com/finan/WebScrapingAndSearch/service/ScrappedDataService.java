@@ -53,15 +53,12 @@ public class ScrappedDataService {
   public void upsertAll(List<ScrappedDataDTO> scrappedDataDTOS) {
     LOGGER.info("Executing upsert operation");
 
-    List<String> urls = scrappedDataDTOS.stream()
-            .map(ScrappedDataDTO::getUrl)
-            .distinct()
-            .toList();
-
+    List<String> urls = scrappedDataDTOS.stream().map(ScrappedDataDTO::getUrl).distinct().toList();
 
     List<ScrappedDataEntity> existing = scrappedDataRepository.findByUrlIn(urls);
 
-    Map<String, ScrappedDataEntity> existingMap = existing.stream()
+    Map<String, ScrappedDataEntity> existingMap =
+        existing.stream()
             .collect(Collectors.toMap(ScrappedDataEntity::getUrl, Function.identity()));
 
     List<ScrappedDataEntity> toSave = new ArrayList<>(scrappedDataDTOS.size());
@@ -76,4 +73,4 @@ public class ScrappedDataService {
     }
     scrappedDataRepository.saveAll(toSave);
   }
-  }
+}
