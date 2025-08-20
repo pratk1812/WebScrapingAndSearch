@@ -1,7 +1,6 @@
 package com.finan.WebScrapingAndSearch.model.response;
 
 import com.finan.WebScrapingAndSearch.model.dto.SearchResultDTO;
-
 import java.util.List;
 
 public class SearchResultResponse {

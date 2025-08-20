@@ -42,18 +42,22 @@ public class ScheduleJobService {
 
   private final Scheduler scheduler;
   private final ScrappedDataRepository scrappedDataRepository;
-    private final ScrappedDataMapper scrappedDataMapper;
+  private final ScrappedDataMapper scrappedDataMapper;
 
-    @Autowired
-  public ScheduleJobService(Scheduler scheduler, ScrappedDataRepository scrappedDataRepository,
-                            ScrappedDataMapper scrappedDataMapper) {
+  @Autowired
+  public ScheduleJobService(
+      Scheduler scheduler,
+      ScrappedDataRepository scrappedDataRepository,
+      ScrappedDataMapper scrappedDataMapper) {
     this.scheduler = scheduler;
-      this.scrappedDataRepository = scrappedDataRepository;
-        this.scrappedDataMapper = scrappedDataMapper;
-    }
+    this.scrappedDataRepository = scrappedDataRepository;
+    this.scrappedDataMapper = scrappedDataMapper;
+  }
 
   public ScheduleJobResponse schedule(ScheduleJobRequest request) {
     LOGGER.info("scheduling job");
+    ScheduleJobResponse response = new ScheduleJobResponse();
+
     String jobId = UUID.randomUUID().toString();
     JobDataMap jobDataMap = new JobDataMap();
     jobDataMap.put("request", request);
@@ -73,22 +77,21 @@ public class ScheduleJobService {
                 SimpleScheduleBuilder.simpleSchedule().withMisfireHandlingInstructionFireNow())
             .forJob(jobDetail)
             .build();
+    response.setJobId(jobId);
+    response.setStatus(ApiStatus.SUCCESS.toString());
+    response.setScheduledAt(request.getSchedule());
+    response.setMessage(Messages.SCRAPING_INITIATED_SUCCESSFULLY);
 
     try {
       scheduler.scheduleJob(jobDetail, trigger);
     } catch (SchedulerException e) {
       throw new ApiException(e);
     }
-
-    ScheduleJobResponse response = new ScheduleJobResponse();
-    response.setJobId(jobId);
-    response.setStatus(ApiStatus.SUCCESS.toString());
-    response.setScheduledAt(request.getSchedule());
-    response.setMessage(Messages.SCRAPING_INITIATED_SUCCESSFULLY);
     return response;
   }
 
   public JobStatusResponse status(String jobId) {
+    LOGGER.info("fetching status");
     JobStatusResponse jobStatusResponse = new JobStatusResponse();
     try {
       JobKey jobKey = new JobKey(jobId);
@@ -96,7 +99,7 @@ public class ScheduleJobService {
       JobDataMap jobDataMap = jobDetail.getJobDataMap();
       ScheduleJobRequest scheduleJobRequest = (ScheduleJobRequest) jobDataMap.get("request");
       long bytes = (long) jobDataMap.get("bytes");
-      jobStatusResponse.setDataSize((bytes/ (1024.0 * 1024.0)) + " MB");
+      jobStatusResponse.setDataSize((bytes / (1024.0 * 1024.0)) + " MB");
       jobStatusResponse.setJobId(jobId);
       jobStatusResponse.setUrlsScraped(scheduleJobRequest.getUrls());
       jobStatusResponse.setKeywordsFound(scheduleJobRequest.getKeywords());
@@ -113,29 +116,33 @@ public class ScheduleJobService {
   }
 
   public SearchResultResponse search(SearchRequest searchRequest) {
-        List<ScrappedDataDTO> scrappedData =
-                scrappedDataRepository.findAll().stream().map(scrappedDataMapper::toDto).toList();
+    LOGGER.info("searching for '{}'", searchRequest.getPrefix());
+    List<ScrappedDataDTO> scrappedData =
+        scrappedDataRepository.findAll().stream().map(scrappedDataMapper::toDto).toList();
 
-    List<SearchResultDTO> results = scrappedData.parallelStream()
-        .map(
-            data -> {
-              SearchTrie searchTrie = SearchTrie.of(data.getKeyWords().toArray(String[]::new));
+    List<SearchResultDTO> results =
+        scrappedData.parallelStream()
+            .map(
+                data -> {
+                  SearchTrie searchTrie = SearchTrie.of(data.getKeyWords().toArray(String[]::new));
 
-              boolean keyWordFound = searchTrie.search(searchRequest.getPrefix());
+                  boolean keyWordFound = searchTrie.search(searchRequest.getPrefix());
 
-              if (keyWordFound) {
-                  SearchResultDTO searchResult = new SearchResultDTO();
-                searchResult.setTimestamp(data.getTimeStamp());
-                searchResult.setUrl(data.getUrl());
-                searchResult.setMatchedContent(data.getData());
-                  return searchResult;
-              }
-              return null;
-            }).filter(Objects::nonNull).toList();
+                  if (keyWordFound) {
+                    SearchResultDTO searchResult = new SearchResultDTO();
+                    searchResult.setTimestamp(data.getTimeStamp());
+                    searchResult.setUrl(data.getUrl());
+                    searchResult.setMatchedContent(data.getData());
+                    return searchResult;
+                  }
+                  return null;
+                })
+            .filter(Objects::nonNull)
+            .toList();
 
     SearchResultResponse response = new SearchResultResponse();
     response.setStatus(ApiStatus.SUCCESS.toString());
     response.setResults(results);
     return response;
-    }
+  }
 }

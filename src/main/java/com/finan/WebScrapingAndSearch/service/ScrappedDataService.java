@@ -4,13 +4,11 @@ import com.finan.WebScrapingAndSearch.model.dto.ScrappedDataDTO;
 import com.finan.WebScrapingAndSearch.persistence.enitity.ScrappedDataEntity;
 import com.finan.WebScrapingAndSearch.persistence.mapper.ScrappedDataMapper;
 import com.finan.WebScrapingAndSearch.persistence.repository.ScrappedDataRepository;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

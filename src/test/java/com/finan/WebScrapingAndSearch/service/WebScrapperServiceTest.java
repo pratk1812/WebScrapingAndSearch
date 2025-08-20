@@ -12,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
@@ -22,10 +24,10 @@ class WebScrapperServiceTest {
   private WebScrapperService service;
 
   @Test
-  void scrape() {
+  void scrape() throws IOException {
     String url = "https://www.scrapingcourse.com/ecommerce/";
 
-    String data = service.scrape("NA", url);
+    String data = service.scrape(url);
 
     SearchTrie searchTrie = SearchTrie.of("search", "option");
 
