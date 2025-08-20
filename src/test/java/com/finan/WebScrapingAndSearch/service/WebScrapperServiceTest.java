@@ -1,27 +1,18 @@
 package com.finan.WebScrapingAndSearch.service;
 
-import com.finan.WebScrapingAndSearch.persistence.enitity.ScrappedDataEntity;
-import com.finan.WebScrapingAndSearch.persistence.repository.ScrappedDataRepository;
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.finan.WebScrapingAndSearch.util.SearchTrie;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
+import java.io.IOException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class WebScrapperServiceTest {
 
-  @InjectMocks
-  private WebScrapperService service;
+  @InjectMocks private WebScrapperService service;
 
   @Test
   void scrape() throws IOException {
