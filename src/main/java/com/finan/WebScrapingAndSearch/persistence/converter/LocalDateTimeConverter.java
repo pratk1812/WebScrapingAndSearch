@@ -1,21 +1,22 @@
 package com.finan.WebScrapingAndSearch.persistence.converter;
 
-import jakarta.persistence.Converter;
 import jakarta.persistence.AttributeConverter;
-
-import java.sql.Date;
+import jakarta.persistence.Converter;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Converter(autoApply = true)
-public class LocalDateConverter implements AttributeConverter<LocalDateTime, Date> {
+public class LocalDateTimeConverter implements AttributeConverter<LocalDateTime, Timestamp> {
 
   @Override
-  public Date convertToDatabaseColumn(LocalDateTime localDateTime) {
-    return localDateTime.;
+  public Timestamp convertToDatabaseColumn(LocalDateTime attribute) {
+    if (attribute != null) return Timestamp.valueOf(attribute);
+    return null;
   }
 
   @Override
-  public LocalDateTime convertToEntityAttribute(Date date) {
+  public LocalDateTime convertToEntityAttribute(Timestamp dbData) {
+    if (dbData != null) return dbData.toLocalDateTime();
     return null;
   }
 }
